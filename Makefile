@@ -88,7 +88,11 @@ themes:
 	cd $(WEB) && npm run themes:generate
 
 db-up:
-	docker compose up -d postgres mailpit
+	@if pg_isready -h 127.0.0.1 -p 5432 -q 2>/dev/null; then \
+	  echo "Using the profile PostgreSQL on 127.0.0.1:5432"; \
+	else \
+	  docker compose up -d postgres mailpit; \
+	fi
 
 db-migrate:
 	cargo run -q -p $(APP) -- migrate
