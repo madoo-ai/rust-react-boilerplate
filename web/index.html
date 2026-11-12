@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="id" data-scroll-behavior="smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Rust + Axum + SQLx + React boilerplate with auth, RBAC, i18n and 38 color themes."
+    />
+    <link rel="icon" type="image/svg+xml" href="/file.svg" />
+    <title>Rust React Boilerplate</title>
+    <script>
+      (function () {
+        try {
+          var cookie = document.cookie;
+          var themeMatch = cookie.match(/(?:^|; )theme=([^;]+)/);
+          var colorMatch = cookie.match(/(?:^|; )color-theme=([^;]+)/);
+          var theme = themeMatch ? decodeURIComponent(themeMatch[1]) : "system";
+          var dark =
+            theme === "dark" ||
+            (theme === "system" &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.classList.toggle("dark", dark);
+          document.documentElement.style.colorScheme = dark ? "dark" : "light";
+          if (colorMatch) {
+            document.documentElement.dataset.colorTheme = decodeURIComponent(
+              colorMatch[1],
+            );
+          }
+        } catch (error) {
+          // A blocked cookie must not prevent the app from loading.
+        }
+      })();
+    </script>
+  </head>
+  <body class="min-h-svh bg-background text-foreground antialiased">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

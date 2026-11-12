@@ -1,0 +1,27 @@
+# Rust
+/target
+**/*.rs.bk
+
+# Frontend
+web/node_modules
+web/dist
+web/coverage
+
+# Environment and local services
+.env
+.env.local
+.manus
+
+# Tests and reports
+web/playwright-report
+web/test-results
+web/blob-report
+
+# Editor and OS
+.DS_Store
+.idea
+.vscode/*
+!.vscode/extensions.json
+
+# Logs
+*.log

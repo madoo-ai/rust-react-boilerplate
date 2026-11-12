@@ -1,0 +1,12 @@
+{
+  "skills": {
+    "rust-skills": {
+      "source": "local OpenCode skill library",
+      "path": ".agents/skills/rust-skills",
+      "license": "MIT",
+      "version": "1.0.0",
+      "categories": 26,
+      "rules": 265
+    }
+  }
+}

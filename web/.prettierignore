@@ -1,0 +1,11 @@
+node_modules
+dist
+coverage
+test-results
+playwright-report
+package-lock.json
+src/components/ui
+src/styles/themes.css
+src/styles/shadcn.css
+src/lib/theme/theme-options.ts
+src/lib/theme/opencode-themes.json

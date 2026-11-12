@@ -1,0 +1,81 @@
+name: rust-react-boilerplate
+
+x-app-build: &app-build
+  context: .
+  args:
+    VITE_APP_NAME: ${APP_NAME:-Rust React Boilerplate}
+
+x-app-env: &app-env
+  DATABASE_URL: postgresql://postgres:postgres@postgres:5432/rust_boilerplate
+  APP_URL: ${APP_URL:-http://localhost:3000}
+  WEB_URL: ${PUBLIC_WEB_URL:-http://localhost:3000}
+  APP_NAME: ${APP_NAME:-Rust React Boilerplate}
+  APP_LOCALE: ${APP_LOCALE:-id}
+  APP_TIME_ZONE: ${APP_TIME_ZONE:-Asia/Jakarta}
+  APP_SECRET: ${APP_SECRET:-change-me-in-production-please-32-chars}
+  PORT: "3000"
+  WEB_DIST: /app/web/dist
+  COOKIE_SECURE: "false"
+  ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:3000}
+  RATE_LIMIT: "true"
+  RUN_MIGRATIONS: "true"
+  SMTP_HOST: mailpit
+  SMTP_PORT: "1025"
+  SMTP_SECURE: "false"
+  MAIL_FROM: hello@example.com
+  RUST_LOG: info,api=debug,rust_react_boilerplate_api=debug
+
+services:
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: rust_boilerplate
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d rust_boilerplate"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mailpit:
+    image: axllent/mailpit:v1.27
+    ports:
+      - "127.0.0.1:8025:8025"
+      - "127.0.0.1:1025:1025"
+
+  migrate:
+    build: *app-build
+    command: ["migrate"]
+    environment: *app-env
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  seed:
+    build: *app-build
+    command: ["seed"]
+    environment: *app-env
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  app:
+    build: *app-build
+    command: ["serve"]
+    environment: *app-env
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      seed:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
