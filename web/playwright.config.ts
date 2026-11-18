@@ -1,8 +1,12 @@
+import { existsSync } from "node:fs";
 import { defineConfig } from "@playwright/test";
 
 const testDatabaseUrl =
   process.env.TEST_DATABASE_URL ??
   "postgresql://postgres:postgres@127.0.0.1:5432/rust_boilerplate_test";
+const chromiumExecutable =
+  process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE ??
+  (existsSync("/opt/chromium/chrome") ? "/opt/chromium/chrome" : undefined);
 
 const apiEnv = {
   DATABASE_URL: testDatabaseUrl,
@@ -33,6 +37,10 @@ export default defineConfig({
     baseURL: "http://localhost:5173",
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
+    launchOptions: {
+      ...(chromiumExecutable ? { executablePath: chromiumExecutable } : {}),
+      args: ["--no-sandbox", "--disable-dev-shm-usage"],
+    },
   },
   webServer: [
     {
